@@ -65,3 +65,18 @@ exports.createUser = async (req, res) => {
 
   return res.status(201).json({ message: `User ${user.username} created` });
 };
+
+exports.deleteUser = async (req, res) => {
+  const { id } = req.params;
+  if (!re.test(id)) return res.status(400).json({ message: 'Provide a valid Id' });
+
+  const userDeleted = await User.deleteById(id);
+
+  console.log(userDeleted);
+
+  if (!userDeleted) return res.status(400).json({ erro: 'User not found, Provide a valid Id' });
+
+  if (userDeleted.error) return res.status(500).json({ erro: 'Internal server Error' });
+
+  return res.status(200).json({ message: `User ${userDeleted.username} deleted` });
+};
