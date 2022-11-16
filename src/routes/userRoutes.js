@@ -1,9 +1,9 @@
 const { Router } = require('express');
-const { getUsers } = require('../controllers/userController');
+const { getUsers, getUser } = require('../controllers/userController');
 
 const router = Router();
 
-// router.get('/:id', getUser);
+router.get('/:id', getUser);
 
 // router.delete('/:id', deleteUser);
 

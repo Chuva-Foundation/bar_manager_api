@@ -10,3 +10,4 @@ coverage
 
 #extras
 querys.sql
+*.bank
