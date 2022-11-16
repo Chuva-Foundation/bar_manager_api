@@ -11,6 +11,6 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-        "camelcase":"off",
+        "camelcase":"off"
     }
 }
