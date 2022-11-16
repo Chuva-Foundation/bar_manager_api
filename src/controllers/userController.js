@@ -27,6 +27,21 @@ const createSchema = Joi.object({
     .required(),
 }).with('password', 'confirm_password');
 
+const schemaUpdate = Joi.object({
+  id: Joi.string()
+    .pattern(/^\d+$/),
+  name: Joi.string()
+    .trim()
+    .min(10)
+    .max(255),
+  password: Joi.string()
+    .min(8)
+    .max(255),
+  confirm_password: Joi.ref('password'),
+  role: Joi.string()
+    .pattern(/^\d+$/),
+}).with('password', 'confirm_password');
+
 exports.getUsers = async (req, res) => {
   const users = await User.selectAll();
 
@@ -47,6 +62,10 @@ exports.getUser = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
+  if (!req.body) {
+    return res.status(400).json({ message: 'Provide a Information' });
+  }
+
   const {
     username, name, password, confirm_password, role,
   } = req.body;
@@ -72,11 +91,35 @@ exports.deleteUser = async (req, res) => {
 
   const userDeleted = await User.deleteById(id);
 
-  console.log(userDeleted);
-
   if (!userDeleted) return res.status(400).json({ erro: 'User not found, Provide a valid Id' });
 
   if (userDeleted.error) return res.status(500).json({ erro: 'Internal server Error' });
 
   return res.status(200).json({ message: `User ${userDeleted.username} deleted` });
+};
+
+exports.updateUser = async (req, res) => {
+  if (!req.body) {
+    return res.status(400).json({ message: 'Provide a Information' });
+  }
+  const {
+    name, password, confirm_password, role,
+  } = req.body;
+
+  const { id } = req.params;
+
+  const { value, error } = schemaUpdate.validate({
+    id, name, password, confirm_password, role,
+  });
+  if (error) {
+    return res.status(400).json({ message: error.message });
+  }
+
+  const userUpdated = await User.updateUser(value);
+
+  if (!userUpdated) return res.status(400).json({ erro: 'User not found, Provide a valid Id' });
+
+  if (userUpdated.error) return res.status(500).json({ erro: 'Internal server Error' });
+
+  return res.status(200).json({ message: `User ${userUpdated.username} updated` });
 };
