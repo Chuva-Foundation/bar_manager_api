@@ -10,10 +10,8 @@ class User {
       );
       return users;
     } catch (error) {
-      if (error) {
-        console.log(error.message);
-        return { error: true };
-      }
+      console.log(error.message);
+      return { error: true };
     }
   }
 
@@ -35,10 +33,8 @@ class User {
 
       return users[0];
     } catch (error) {
-      if (error) {
-        console.log(error.message);
-        return { error: true, message: error.message };
-      }
+      console.log(error.message);
+      return { error: true, message: error.message };
     }
   }
 
@@ -72,10 +68,8 @@ class User {
       const user = await this.selectById(id);
       return user;
     } catch (error) {
-      if (error) {
-        console.log(error.message);
-        return { error: true, message: error.message };
-      }
+      console.log(error.message);
+      return { error: true, message: error.message };
     }
   }
 
@@ -87,10 +81,8 @@ class User {
       );
       return users[0];
     } catch (error) {
-      if (error) {
-        console.log(error.message);
-        return { error: true };
-      }
+      console.log(error.message);
+      return { error: true };
     }
   }
 
@@ -102,9 +94,8 @@ class User {
       );
       return users[0];
     } catch (error) {
-      if (error) {
-        return error;
-      }
+      console.log(error.message);
+      return { error: true };
     }
   }
 
@@ -116,10 +107,23 @@ class User {
       );
       return users[0];
     } catch (error) {
-      if (error) {
-        console.log(error.message);
-        return { error: true };
-      }
+      console.log(error.message);
+      return { error: true };
+    }
+  }
+
+  static async correctPassword(id, password) {
+    try {
+      const queryData = await db.query(
+        'SELECT password FROM users WHERE id = $1',
+        [id],
+      );
+      if (!queryData.rowCount) return false;
+      const password_hash = queryData.rows[0].password;
+      return await bcrypt.compare(password, password_hash);
+    } catch (error) {
+      console.log(error.message);
+      return { error: true };
     }
   }
 }

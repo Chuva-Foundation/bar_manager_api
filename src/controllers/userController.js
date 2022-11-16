@@ -47,7 +47,7 @@ exports.getUsers = async (req, res) => {
 
   if (users.error) return res.status(500).json({ erro: 'Internal Server Error' });
 
-  return res.status(200).json({ users });
+  return res.status(200).json(users);
 };
 
 exports.getUser = async (req, res) => {
