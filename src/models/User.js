@@ -6,7 +6,7 @@ class User {
   static async selectAll() {
     try {
       const { rows: users } = await db.query(
-        'SELECT users.id, name, username, role_id, role_name, create_at FROM users JOIN roles on role_id = roles.id;',
+        'SELECT users.id, name, username, role_id, role_name, create_at, update_at FROM users JOIN roles on role_id = roles.id;',
       );
       return users;
     } catch (error) {
@@ -27,7 +27,7 @@ class User {
       const password_hash = await bcrypt.hash(password, 10);
 
       const { rows: users } = await db.query(
-        'INSERT INTO users (name, username, password, role_id, create_at) VALUES ($1, $2, $3, $4, NOW()) RETURNING username;',
+        'INSERT INTO users (name, username, password, role_id, create_at, update_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING username;',
         [name, username, password_hash, role],
       );
 
@@ -48,20 +48,20 @@ class User {
       // if (isUsernameNotAvilable) return { error: true, message: 'username not available' };
       if (name) {
         await db.query(
-          'UPDATE users SET name = $1 WHERE id = $2;',
+          'UPDATE users SET name = $1, update_at = NOW()  WHERE id = $2;',
           [name, id],
         );
       }
       if (password) {
         const password_hash = await bcrypt.hash(password, 10);
         await db.query(
-          'UPDATE users SET password = $1 WHERE id = $2;',
+          'UPDATE users SET password = $1, update_at = NOW() WHERE id = $2;',
           [password_hash, id],
         );
       }
       if (role) {
         await db.query(
-          'UPDATE users SET role_id = $1 WHERE id = $2;',
+          'UPDATE users SET role_id = $1, update_at = NOW() WHERE id = $2;',
           [role, id],
         );
       }
