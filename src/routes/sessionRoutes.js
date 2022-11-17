@@ -3,7 +3,7 @@ const { createSession } = require('../controllers/sessionController');
 
 const router = Router();
 
-// router.delete('/:id', deleteUser);
+// router.delete('/:id', deleteSession);
 
 router.post('/', createSession);
 

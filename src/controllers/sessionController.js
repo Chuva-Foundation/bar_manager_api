@@ -2,6 +2,7 @@ const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
+require('dotenv').config();
 
 const schemaCreate = Joi.object({
   username: Joi.string()
@@ -18,6 +19,7 @@ const schemaCreate = Joi.object({
 });
 
 exports.createSession = async (req, res) => {
+  console.log(req.body);
   const { username, password } = req.body;
 
   const { value, error } = schemaCreate.validate({
@@ -36,7 +38,7 @@ exports.createSession = async (req, res) => {
   return res.status(201).json({
     user,
     token: jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: '24h',
+      expiresIn: '8h',
     }),
   });
 };
