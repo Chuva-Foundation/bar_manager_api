@@ -56,6 +56,8 @@ exports.getUser = async (req, res) => {
 
   const user = await User.selectById(id);
 
+  if (!user) return res.status(400).json({ erro: 'User not found, Provide a valid Id' });
+
   if (user.error) return res.status(500).json({ erro: 'Internal Server Error' });
 
   return res.status(200).json({ user });
@@ -99,9 +101,8 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: 'Provide a Information' });
-  }
+  if (!req.body) return res.status(400).json({ message: 'Provide a Information' });
+
   const {
     name, password, confirm_password, role,
   } = req.body;

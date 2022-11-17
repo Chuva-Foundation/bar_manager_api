@@ -44,8 +44,6 @@ class User {
     } = userDataToUpdate;
 
     try {
-      // const isUsernameNotAvilable = await this.selectByUsername(username);
-      // if (isUsernameNotAvilable) return { error: true, message: 'username not available' };
       if (name) {
         await db.query(
           'UPDATE users SET name = $1, update_at = NOW()  WHERE id = $2;',
@@ -76,7 +74,7 @@ class User {
   static async selectById(id) {
     try {
       const { rows: users } = await db.query(
-        'SELECT users.id, name, username, role_id, role_name, create_at FROM users JOIN roles on role_id = roles.id WHERE users.id = $1;',
+        'SELECT users.id, name, username, role_id, role_name, create_at, update_at FROM users JOIN roles on role_id = roles.id WHERE users.id = $1;',
         [id],
       );
       return users[0];
@@ -89,7 +87,7 @@ class User {
   static async selectByUsername(username) {
     try {
       const { rows: users } = await db.query(
-        'SELECT users.id, name, username, role_id, role_name, create_at FROM users JOIN roles on role_id = roles.id WHERE username = $1',
+        'SELECT users.id, name, username, role_id, role_name, create_at, update_at FROM users JOIN roles on role_id = roles.id WHERE username = $1',
         [username],
       );
       return users[0];

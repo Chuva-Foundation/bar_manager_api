@@ -17,7 +17,7 @@ CREATE TABLE users (
   FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 
-CREATE TABLE category (
+CREATE TABLE categories (
   id SERIAL PRIMARY KEY,
   name VARCHAR (255) UNIQUE NOT NULL,
   description VARCHAR (255),
