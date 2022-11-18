@@ -29,7 +29,8 @@ const createSchema = Joi.object({
 
 const schemaUpdate = Joi.object({
   id: Joi.string()
-    .pattern(/^\d+$/),
+    .pattern(/^\d+$/)
+    .required(),
   name: Joi.string()
     .trim()
     .min(10)

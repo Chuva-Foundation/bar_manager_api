@@ -24,6 +24,26 @@ const createSchema = Joi.object({
     .required(),
 });
 
+const updateSchema = Joi.object({
+  id: Joi.string()
+    .pattern(/^\d+$/)
+    .required(),
+  name: Joi.string()
+    .trim()
+    .lowercase()
+    .alphanum()
+    .min(4)
+    .max(25),
+  description: Joi.string()
+    .trim()
+    .max(255),
+  category_id: Joi.string()
+    .pattern(/^\d+$/),
+  price: Joi.number()
+    .precision(2)
+    .sign('positive'),
+});
+
 exports.getProducts = async (req, res) => {
   const products = await Product.selectAll();
 
@@ -66,8 +86,38 @@ exports.createProduct = async (req, res) => {
 };
 
 exports.deleteProduct = async (req, res) => {
+  const { id } = req.params;
+  if (!re.test(id)) return res.status(400).json({ message: 'Provide a valid Id' });
 
+  const productDeleted = await Product.deleteById(id);
+
+  if (!productDeleted) return res.status(400).json({ erro: 'Category not found, Provide a valid Id' });
+
+  if (productDeleted.error) return res.status(500).json({ erro: 'Internal server Error' });
+
+  return res.status(200).json({ message: `Category ${productDeleted.name} deleted` });
 };
-exports.updateProduct = async (req, res) => {
 
+exports.updateProduct = async (req, res) => {
+  if (!req.body) {
+    return res.status(400).json({ message: 'Provide a Information' });
+  }
+  const {
+    name, description, category_id, price,
+  } = req.body;
+
+  const { id } = req.params;
+
+  const { value, error } = updateSchema.validate({
+    id, description, name, category_id, price,
+  });
+  if (error) return res.status(400).json({ message: error.message });
+
+  const productUpdated = await Product.update(value);
+
+  if (!productUpdated) return res.status(400).json({ erro: 'Product not found, Provide a valid Id' });
+
+  if (productUpdated.error) return res.status(500).json({ erro: productUpdated.message });
+
+  return res.status(200).json({ message: `Product ${productUpdated.name} updated` });
 };

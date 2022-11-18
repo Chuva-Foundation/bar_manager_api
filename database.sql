@@ -6,6 +6,8 @@ CREATE TABLE roles (
   description VARCHAR (255)
 );
 
+INSERT INTO roles (role_name) VALUES (admin), (doorman), (waiter), (cashier);
+
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
