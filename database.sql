@@ -38,3 +38,9 @@ CREATE TABLE products (
   FOREIGN KEY (category_id) REFERENCES category (id)
 );
 
+CREATE TABLE cards (
+  id VARCHAR PRIMARY KEY,
+  active BOOLEAN NOT NULL DEFAULT false,
+  create_at TIMESTAMP NOT NULL,
+  update_at TIMESTAMP NOT NULL
+);
