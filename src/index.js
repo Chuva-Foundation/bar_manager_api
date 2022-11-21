@@ -11,6 +11,7 @@ const roleRoutes = require('./routes/roleRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const cardRoutes = require('./routes/cardRoutes');
+const billRoutes = require('./routes/billRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +27,7 @@ app.use('/roles', roleRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
 app.use('/cards', cardRoutes);
+app.use('/bills', billRoutes);
 app.get('/', (req, res) => res.status(200).json({ message: 'Welcome to Bar Sell\'s API' }));
 
 app.listen(PORT, () => {

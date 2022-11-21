@@ -44,3 +44,12 @@ CREATE TABLE cards (
   create_at TIMESTAMP NOT NULL,
   update_at TIMESTAMP NOT NULL
 );
+
+CREATE TABLE bills (
+  id SERIAL PRIMARY KEY,
+  paid_out BOOLEAN NOT NULL DEFAULT false,
+  card_id VARCHAR UNIQUE,
+  create_at TIMESTAMP NOT NULL,
+  update_at TIMESTAMP NOT NULL,
+  FOREIGN KEY (card_id) REFERENCES cards (id)
+)
