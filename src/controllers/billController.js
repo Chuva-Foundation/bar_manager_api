@@ -7,6 +7,7 @@ const re = /^\d+$/;
 
 const cardIdSchema = Joi.object({
   card_id: Joi.string()
+    .trim()
     .guid({ version: ['uuidv4'] })
     .required(),
 });
@@ -34,7 +35,6 @@ exports.getBill = async (req, res) => {
 
 exports.getBillByCardId = async (req, res) => {
   const { card_id } = req.params;
-  console.log(card_id);
   const { value, error } = cardIdSchema.validate({
     card_id,
   });

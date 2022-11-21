@@ -58,16 +58,14 @@ class Bills {
 
   static async update(cardDataToUpdate) {
     const {
-      id, card_id,
+      card_id,
     } = cardDataToUpdate;
-    console.log(id);
 
     try {
       const { rows: bills } = await db.query(
         'UPDATE bills SET paid_out = true, card_id =null, update_at = NOW() WHERE card_id = $1 RETURNING *;',
         [card_id],
       );
-      console.log(bills);
       return bills[0];
     } catch (error) {
       console.log(error.message);

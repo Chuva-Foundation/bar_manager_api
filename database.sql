@@ -39,7 +39,7 @@ CREATE TABLE products (
 );
 
 CREATE TABLE cards (
-  id VARCHAR PRIMARY KEY,
+  id UUID PRIMARY KEY,
   active BOOLEAN NOT NULL DEFAULT false,
   create_at TIMESTAMP NOT NULL,
   update_at TIMESTAMP NOT NULL
@@ -48,8 +48,22 @@ CREATE TABLE cards (
 CREATE TABLE bills (
   id SERIAL PRIMARY KEY,
   paid_out BOOLEAN NOT NULL DEFAULT false,
-  card_id VARCHAR UNIQUE,
+  card_id UUID UNIQUE,
   create_at TIMESTAMP NOT NULL,
   update_at TIMESTAMP NOT NULL,
   FOREIGN KEY (card_id) REFERENCES cards (id)
+)
+
+CREATE TABLE sales (
+  id SERIAL PRIMARY KEY,
+  product_id INT NOT NULL,
+  amount INT NOT NULL CHECK (amount >= 1),
+  price FLOAT(2) NOT NULL,
+  seller INT NOT NULL,
+  bill_id INT NOT NULL,
+  create_at TIMESTAMP NOT NULL,
+  update_at TIMESTAMP NOT NULL,
+  FOREIGN KEY (product_id) REFERENCES products (id),
+  FOREIGN KEY (seller) REFERENCES users (id),
+  FOREIGN KEY (bill_id) REFERENCES bills (id)
 )

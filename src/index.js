@@ -12,6 +12,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const cardRoutes = require('./routes/cardRoutes');
 const billRoutes = require('./routes/billRoutes');
+const saleRoutes = require('./routes/saleRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +29,8 @@ app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
 app.use('/cards', cardRoutes);
 app.use('/bills', billRoutes);
+app.use('/sales', saleRoutes);
+
 app.get('/', (req, res) => res.status(200).json({ message: 'Welcome to Bar Sell\'s API' }));
 
 app.listen(PORT, () => {
