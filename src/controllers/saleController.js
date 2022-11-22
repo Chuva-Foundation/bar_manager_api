@@ -1,36 +1,9 @@
-const Joi = require('joi');
-
 const Bill = require('../models/Bill');
 // const Card = require('../models/Card');
 const Sale = require('../models/Sale');
 const Product = require('../models/Product');
 
 const re = /^\d+$/;
-
-const createSchema = Joi.object({
-  card_id: Joi.string()
-    .trim()
-    .guid({ version: ['uuidv4'] })
-    .required(),
-  product_id: Joi.string()
-    .pattern(/^\d+$/)
-    .required(),
-  amount: Joi.string()
-    .pattern(/^\d+$/)
-    .required(),
-});
-const updateSchema = Joi.object({
-  product_id: Joi.string()
-    .pattern(/^\d+$/),
-  amount: Joi.string()
-    .pattern(/^\d+$/),
-});
-const getByCardSchema = Joi.object({
-  card_id: Joi.string()
-    .trim()
-    .guid({ version: ['uuidv4'] })
-    .required(),
-});
 
 exports.getSales = async (req, res) => {
   const sales = await Sale.selectAll();
@@ -41,17 +14,9 @@ exports.getSales = async (req, res) => {
 };
 
 exports.getSalesByCard = async (req, res) => {
-  const {
-    card_id,
-  } = req.params;
+  const { card_id } = req.body;
 
-  const { value, error } = getByCardSchema.validate({
-    card_id,
-  });
-
-  if (error) return res.status(400).json({ message: error.message });
-
-  const bill = await Bill.selectByCardId(value.card_id);
+  const bill = await Bill.selectByCardId(card_id);
 
   if (!bill) return res.status(400).json({ error: 'Bill not found, Provide a valid Id' });
 
@@ -70,17 +35,9 @@ exports.createSale = async (req, res) => {
   // get seller id trough auth
   const seller = 2;
 
-  const {
-    product_id, amount, card_id,
-  } = req.body;
+  const { card_id, product_id, amount } = req.body;
 
-  const { value, error } = createSchema.validate({
-    product_id, amount, card_id,
-  });
-
-  if (error) return res.status(400).json({ message: error.message });
-
-  const bill = await Bill.selectByCardId(value.card_id);
+  const bill = await Bill.selectByCardId(card_id);
 
   if (!bill) return res.status(400).json({ error: 'Bill not found, Provide a valid Id' });
 
@@ -92,7 +49,7 @@ exports.createSale = async (req, res) => {
 
   if (product.error) return res.status(500).json({ error: 'Internal Server Error' });
 
-  const sale = await Sale.insert(value.product_id, value.amount, product.price, seller, bill.id);
+  const sale = await Sale.insert(product_id, amount, product.price, seller, bill.id);
 
   if (sale.error) return res.status(500).json({ error: sale.message });
 
@@ -102,23 +59,12 @@ exports.createSale = async (req, res) => {
 exports.updateSale = async (req, res) => {
   const { id } = req.params;
 
-  if (!re.test(id)) return res.status(400).json({ message: 'Provide a valid Id' });
-
-  if (!req.body) return res.status(400).json({ message: 'Provide a Information' });
   // get seller id trough auth
   const seller = 2;
 
-  const {
-    product_id, amount,
-  } = req.body;
+  if (!re.test(id)) return res.status(400).json({ message: 'Provide a valid Id' });
 
-  const { value, error } = updateSchema.validate({
-    product_id, amount,
-  });
-
-  if (error) return res.status(400).json({ message: error.message });
-
-  const sale = await Sale.update(id, seller, value);
+  const sale = await Sale.update(id, seller, req.body);
 
   if (sale.error) return res.status(500).json({ error: sale.message });
 

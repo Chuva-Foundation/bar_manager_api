@@ -347,3 +347,53 @@ exports.roleUpdateValidator = async (req, res, next) => {
   req.body = { ...req.body, ...value };
   next();
 };
+
+exports.saleCreateValidator = async (req, res, next) => {
+  const createSchema = Joi.object({
+    card_id: Joi.string()
+      .trim()
+      .guid({ version: ['uuidv4'] })
+      .required(),
+    product_id: Joi.string()
+      .pattern(/^\d+$/)
+      .required(),
+    amount: Joi.string()
+      .pattern(/^\d+$/)
+      .required(),
+  });
+  // const {
+  //   product_id, amount, card_id,
+  // } = req.body;
+
+  const { value, error } = createSchema.validate({
+    ...req.body,
+  });
+
+  if (error) return res.status(400).json({ message: error.message });
+  req.body = { ...req.body, ...value };
+  next();
+};
+
+exports.saleUpdateValidator = async (req, res, next) => {
+  const updateSchema = Joi.object({
+    product_id: Joi.string()
+      .pattern(/^\d+$/),
+    amount: Joi.string()
+      .pattern(/^\d+$/),
+  });
+
+  if (!req.body) return res.status(400).json({ message: 'Provide a Information' });
+
+  // const {
+  //   product_id, amount,
+  // } = req.body;
+
+  const { value, error } = updateSchema.validate({
+    ...req.body,
+  });
+
+  if (error) return res.status(400).json({ message: error.message });
+
+  req.body = { ...req.body, ...value };
+  next();
+};
