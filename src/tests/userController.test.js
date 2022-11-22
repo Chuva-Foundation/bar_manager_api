@@ -225,95 +225,7 @@ describe('update user', () => {
     expect(res.statusCode).toBe(400);
     expect(res._getJSONData()).toEqual({ error: 'User not found, Provide a valid Id' });
   });
-  //   it('if id not integer should return id error', async () => {
-  //     req = {
-  //       body: {
-  //         userId: '1.0',
-  //       },
-  //     };
-  //     await updateUser(req, res);
-  //     expect(res.statusCode).toBe(400);
-  //     expect(res._getJSONData()).toEqual({ message: 'Provide a valid Id' });
-  //   });
-  //   it('if id not integer should return id error', async () => {
-  //     req = {
-  //       body: {
-  //         userId: '1a0',
-  //       },
-  //     };
-  //     await updateUser(req, res);
-  //     expect(res.statusCode).toBe(400);
-  //     expect(res._getJSONData()).toEqual({ message: 'Provide a valid Id' });
-  //   });
-  //   it('should ask to confirm password', async () => {
-  //     req = {
-  //       body: {
-  //         userId: '1',
-  //         password: '01234567',
-  //       },
-  //     };
-  //     await updateUser(req, res);
-  //     expect(res.statusCode).toBe(400);
-  //     expect(res._getJSONData()).toEqual({ message: '\"password\" missing required peer \"confirm_password\"' });
-  //   });
-  //   it('should ask for a valid email (no domain)', async () => {
-  //     req = {
-  //       body: {
-  //         userId: '1',
-  //         email: 'any@mailcv',
-  //       },
-  //     };
-  //     await updateUser(req, res);
-  //     expect(res.statusCode).toBe(400);
-  //     expect(res._getJSONData()).toEqual({ message: '\"email\" must be a valid email' });
-  //   });
-  //   it('should ask for a valid email (no @)', async () => {
-  //     req = {
-  //       body: {
-  //         userId: '1',
-  //         email: 'anymail.cv',
-  //       },
-  //     };
-  //     await updateUser(req, res);
-  //     expect(res.statusCode).toBe(400);
-  //     expect(res._getJSONData()).toEqual({ message: '\"email\" must be a valid email' });
-  //   });
-  //   it('should ask an unused email', async () => {
-  //     req = {
-  //       body: {
-  //         userId: '1',
-  //         email: 'used@mail.cv',
-  //       },
-  //     };
-  //     await updateUser(req, res);
-  //     expect(res.statusCode).toBe(500);
-  //     expect(res._getJSONData()).toEqual({ message: 'email in use, provide other' });
-  //   });
-  //   it('should ask for a longer password', async () => {
-  //     req = {
-  //       body: {
-  //         userId: '1',
-  //         password: '0123456',
-  //         confirm_password: '01234567',
-  //       },
-  //     };
-  //     await updateUser(req, res);
-  //     expect(res.statusCode).toBe(400);
-  //     expect(res._getJSONData()).toEqual({ message: '\"password\" length must be at least 8 characters long' });
-  //   });
-  //   it('should return updated User (only email)', async () => {
-  //     req = {
-  //       body: {
-  //         Id: '1',
-  //         email: 'updated@mail.cv',
-  //       },
-  //     };
-  //     await updateUser(req, res);
-  //     expect(res.statusCode).toBe(200);
-  //     expect(res._getJSONData()).toEqual({
-  //       message: 'User anyuser Updated',
-  //     });
-  //   });
+
   it('should return updated User (password only)', async () => {
     await db.query(
       'INSERT INTO users (name, username, password, role_id, create_at, update_at) VALUES ($1 , $2, $3, $4, NOW(), NOW()) RETURNING id, name, username, role_id;',
@@ -350,13 +262,3 @@ describe('update user', () => {
     });
   });
 });
-
-// req = {
-//   body: {
-//     userId: '1',
-//     username: 'anyuser',
-//     email: 'any@mail.cv',
-//     password: '01234567',
-//     confirm_password: '01234567',
-//   },
-// };

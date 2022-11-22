@@ -141,3 +141,67 @@ exports.updateCardValidator = async (req, res, next) => {
   req.body = { ...req.body, ...value };
   next();
 };
+
+exports.categoryCreateValidator = async (req, res, next) => {
+  const createSchema = Joi.object({
+    name: Joi.string()
+      .trim()
+      .lowercase()
+      .alphanum()
+      .min(4)
+      .max(25)
+      .required(),
+    description: Joi.string()
+      .trim()
+      .max(255),
+  });
+
+  if (!req.body) return res.status(400).json({ message: 'Provide a Information' });
+
+  // const {
+  //   name, description,
+  // } = req.body;
+
+  const { value, error } = createSchema.validate({
+    ...req.body,
+  });
+
+  if (error) return res.status(400).json({ message: error.message });
+
+  req.body = { ...req.body, ...value };
+  next();
+};
+
+exports.categoryUpdateValidator = async (req, res, next) => {
+  const updateSchema = Joi.object({
+    id: Joi.string()
+      .pattern(/^\d+$/)
+      .required(),
+    name: Joi.string()
+      .trim()
+      .lowercase()
+      .alphanum()
+      .min(4)
+      .max(25),
+    description: Joi.string()
+      .trim()
+      .max(255),
+  });
+
+  if (!req.body) {
+    return res.status(400).json({ message: 'Provide a Information' });
+  }
+  // const {
+  //   name, description,
+  // } = req.body;
+
+  // const { id } = req.params;
+
+  const { value, error } = schemaUpdate.validate({
+    ...req.body, ...req.params,
+  });
+  if (error) return res.status(400).json({ message: error.message });
+
+  req.body = { ...req.body, ...value };
+  next();
+};
