@@ -397,3 +397,27 @@ exports.saleUpdateValidator = async (req, res, next) => {
   req.body = { ...req.body, ...value };
   next();
 };
+
+exports.sessionCreateValidator = async (req, res, next) => {
+  const createSchema = Joi.object({
+    username: Joi.string()
+      .trim()
+      .lowercase()
+      .alphanum()
+      .min(4)
+      .max(25)
+      .required(),
+    password: Joi.string()
+      .min(8)
+      .max(255)
+      .required(),
+  });
+
+  const { value, error } = createSchema.validate({
+    ...req.body,
+  });
+  if (error) return res.status(400).json({ message: error.message });
+
+  req.body = { ...req.body, ...value };
+  next();
+};
