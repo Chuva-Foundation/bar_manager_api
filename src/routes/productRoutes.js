@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { productCreateValidator, productUpdateValidator } = require('../middlewares/validator');
 const {
   getProducts, getProduct, createProduct, deleteProduct, updateProduct,
 } = require('../controllers/productController');
@@ -9,9 +10,9 @@ router.get('/:id', getProduct);
 
 router.delete('/:id', deleteProduct);
 
-router.put('/:id', updateProduct);
+router.put('/:id', productUpdateValidator, updateProduct);
 
-router.post('/', createProduct);
+router.post('/', productCreateValidator, createProduct);
 
 router.get('/', getProducts);
 

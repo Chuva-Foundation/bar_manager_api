@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { categoryCreateValidator, categoryUpdateValidator } = require('../middlewares/validator');
 const {
   getCategories, getCategory, createCategory, deleteCategory, updateCategory,
 } = require('../controllers/categoryController');
@@ -9,9 +10,9 @@ router.get('/:id', getCategory);
 
 router.delete('/:id', deleteCategory);
 
-router.put('/:id', updateCategory);
+router.put('/:id', categoryUpdateValidator, updateCategory);
 
-router.post('/', createCategory);
+router.post('/', categoryCreateValidator, createCategory);
 
 router.get('/', getCategories);
 

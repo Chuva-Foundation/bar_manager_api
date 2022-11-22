@@ -1,53 +1,11 @@
-const Joi = require('joi');
-
 const Product = require('../models/Product');
 
 const re = /^\d+$/;
 
-const createSchema = Joi.object({
-  name: Joi.string()
-    .trim()
-    .lowercase()
-    .alphanum()
-    .min(4)
-    .max(25)
-    .required(),
-  description: Joi.string()
-    .trim()
-    .max(255),
-  category_id: Joi.string()
-    .pattern(/^\d+$/)
-    .required(),
-  price: Joi.number()
-    .precision(2)
-    .sign('positive')
-    .required(),
-});
-
-const updateSchema = Joi.object({
-  id: Joi.string()
-    .pattern(/^\d+$/)
-    .required(),
-  name: Joi.string()
-    .trim()
-    .lowercase()
-    .alphanum()
-    .min(4)
-    .max(25),
-  description: Joi.string()
-    .trim()
-    .max(255),
-  category_id: Joi.string()
-    .pattern(/^\d+$/),
-  price: Joi.number()
-    .precision(2)
-    .sign('positive'),
-});
-
 exports.getProducts = async (req, res) => {
   const products = await Product.selectAll();
 
-  if (products.error) return res.status(500).json({ erro: 'Internal Server Error' });
+  if (products.error) return res.status(500).json({ error: 'Internal Server Error' });
 
   return res.status(200).json(products);
 };
@@ -58,29 +16,17 @@ exports.getProduct = async (req, res) => {
 
   const product = await Product.selectById(id);
 
-  if (!product) return res.status(400).json({ erro: 'Product not found, Provide a valid Id' });
+  if (!product) return res.status(400).json({ error: 'Product not found, Provide a valid Id' });
 
-  if (product.error) return res.status(500).json({ erro: 'Internal Server Error' });
+  if (product.error) return res.status(500).json({ error: 'Internal Server Error' });
 
   return res.status(200).json({ product });
 };
 
 exports.createProduct = async (req, res) => {
-  if (!req.body) return res.status(400).json({ message: 'Provide a Information' });
+  const product = await Product.insert(req.body);
 
-  const {
-    name, description, category_id, price,
-  } = req.body;
-
-  const { value, error } = createSchema.validate({
-    name, description, category_id, price,
-  });
-
-  if (error) return res.status(400).json({ message: error.message });
-
-  const product = await Product.insert(value);
-
-  if (product.error) return res.status(500).json({ erro: product.message });
+  if (product.error) return res.status(500).json({ error: product.message });
 
   return res.status(201).json({ message: `Product ${product.name} created` });
 };
@@ -91,33 +37,19 @@ exports.deleteProduct = async (req, res) => {
 
   const productDeleted = await Product.deleteById(id);
 
-  if (!productDeleted) return res.status(400).json({ erro: 'Category not found, Provide a valid Id' });
+  if (!productDeleted) return res.status(400).json({ error: 'Category not found, Provide a valid Id' });
 
-  if (productDeleted.error) return res.status(500).json({ erro: 'Internal server Error' });
+  if (productDeleted.error) return res.status(500).json({ error: 'Internal server Error' });
 
   return res.status(200).json({ message: `Category ${productDeleted.name} deleted` });
 };
 
 exports.updateProduct = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: 'Provide a Information' });
-  }
-  const {
-    name, description, category_id, price,
-  } = req.body;
+  const productUpdated = await Product.update(req.body);
 
-  const { id } = req.params;
+  if (!productUpdated) return res.status(400).json({ error: 'Product not found, Provide a valid Id' });
 
-  const { value, error } = updateSchema.validate({
-    id, description, name, category_id, price,
-  });
-  if (error) return res.status(400).json({ message: error.message });
-
-  const productUpdated = await Product.update(value);
-
-  if (!productUpdated) return res.status(400).json({ erro: 'Product not found, Provide a valid Id' });
-
-  if (productUpdated.error) return res.status(500).json({ erro: productUpdated.message });
+  if (productUpdated.error) return res.status(500).json({ error: productUpdated.message });
 
   return res.status(200).json({ message: `Product ${productUpdated.name} updated` });
 };

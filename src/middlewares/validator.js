@@ -57,7 +57,7 @@ exports.userUpdateValidate = (req, res, next) => {
       .min(8)
       .max(255),
     confirm_password: Joi.ref('password'),
-    role: Joi.string()
+    role_id: Joi.string()
       .pattern(/^\d+$/),
   }).with('password', 'confirm_password');
 
@@ -175,6 +175,7 @@ exports.categoryCreateValidator = async (req, res, next) => {
 exports.categoryUpdateValidator = async (req, res, next) => {
   const updateSchema = Joi.object({
     id: Joi.string()
+      .trim()
       .pattern(/^\d+$/)
       .required(),
     name: Joi.string()
@@ -197,8 +198,87 @@ exports.categoryUpdateValidator = async (req, res, next) => {
 
   // const { id } = req.params;
 
-  const { value, error } = schemaUpdate.validate({
+  const { value, error } = updateSchema.validate({
     ...req.body, ...req.params,
+  });
+  if (error) return res.status(400).json({ message: error.message });
+
+  req.body = { ...req.body, ...value };
+  next();
+};
+
+exports.productCreateValidator = async (req, res, next) => {
+  const createSchema = Joi.object({
+    name: Joi.string()
+      .trim()
+      .lowercase()
+      .alphanum()
+      .min(4)
+      .max(25)
+      .required(),
+    description: Joi.string()
+      .trim()
+      .max(255),
+    category_id: Joi.string()
+      .trim()
+      .pattern(/^\d+$/)
+      .required(),
+    price: Joi.number()
+      .precision(2)
+      .sign('positive')
+      .required(),
+  });
+
+  if (!req.body) return res.status(400).json({ message: 'Provide a Information' });
+
+  // const {
+  //   name, description, category_id, price,
+  // } = req.body;
+
+  const { value, error } = createSchema.validate({
+    ...req.body,
+  });
+
+  if (error) return res.status(400).json({ message: error.message });
+
+  req.body = { ...req.body, ...value };
+  next();
+};
+
+exports.productUpdateValidator = async (req, res, next) => {
+  const updateSchema = Joi.object({
+    id: Joi.string()
+      .trim()
+      .pattern(/^\d+$/)
+      .required(),
+    name: Joi.string()
+      .trim()
+      .lowercase()
+      .alphanum()
+      .min(4)
+      .max(25),
+    description: Joi.string()
+      .trim()
+      .max(255),
+    category_id: Joi.string()
+      .trim()
+      .pattern(/^\d+$/),
+    price: Joi.number()
+      .precision(2)
+      .sign('positive'),
+  });
+
+  if (!req.body) {
+    return res.status(400).json({ message: 'Provide a Information' });
+  }
+  // const {
+  //   name, description, category_id, price,
+  // } = req.body;
+
+  // const { id } = req.params;
+
+  const { value, error } = updateSchema.validate({
+    ...req.params, ...req.body,
   });
   if (error) return res.status(400).json({ message: error.message });
 
