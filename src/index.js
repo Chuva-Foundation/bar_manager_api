@@ -4,7 +4,7 @@ const express = require('express');
 const cors = require('cors');
 
 const checkJson = require('./middlewares/checkJson');
-// const auth = require('./middlewares/auth');
+const auth = require('./middlewares/auth');
 const userRoutes = require('./routes/userRoutes');
 const sessionRoutes = require('./routes/sessionRoutes');
 const roleRoutes = require('./routes/roleRoutes');
@@ -21,8 +21,11 @@ app.use(cors());
 app.use(express.json());
 app.use(checkJson);
 
-// app.use(auth);
+// public route
 app.use('/sessions', sessionRoutes);
+
+// private routes
+app.use(auth);
 app.use('/users', userRoutes);
 app.use('/roles', roleRoutes);
 app.use('/categories', categoryRoutes);

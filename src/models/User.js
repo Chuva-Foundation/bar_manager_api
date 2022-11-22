@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 const bcrypt = require('bcrypt');
-const db = require('../config/database');
+const db = require('../configs/database');
 
 class User {
   static async selectAll() {

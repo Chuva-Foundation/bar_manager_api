@@ -1,5 +1,5 @@
 /* eslint-disable no-multi-str */
-const db = require('../config/database');
+const db = require('../configs/database');
 
 class Sales {
   static async selectAll() {

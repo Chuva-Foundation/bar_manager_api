@@ -1,4 +1,4 @@
-const db = require('../config/database');
+const db = require('../configs/database');
 
 class Product {
   static async selectAll() {
