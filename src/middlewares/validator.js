@@ -99,3 +99,45 @@ exports.billByCardIdValidate = (req, res, next) => {
   req.body = { ...req.body, ...value };
   next();
 };
+exports.getCardValidator = async (req, res, next) => {
+  const getSchema = Joi.object({
+    id: Joi.string()
+      .trim()
+      .guid({ version: ['uuidv4'] })
+      .required(),
+  });
+
+  const { id } = req.params;
+  const { error, value } = getSchema.validate({ id });
+  if (error) return res.status(400).json({ message: 'Provide a valid Id' });
+
+  req.body = { ...req.body, ...value };
+  next();
+};
+
+exports.updateCardValidator = async (req, res, next) => {
+  const updateSchema = Joi.object({
+    id: Joi.string()
+      .trim()
+      .guid({ version: ['uuidv4'] })
+      .required(),
+    active: Joi.boolean(),
+  });
+
+  if (!req.body) {
+    return res.status(400).json({ message: 'Provide a Information' });
+  }
+  // const {
+  //   active,
+  // } = req.body;
+
+  // const { id } = req.params;
+
+  const { value, error } = updateSchema.validate({
+    ...req.body, ...req.params,
+  });
+  if (error) return res.status(400).json({ message: error.message });
+
+  req.body = { ...req.body, ...value };
+  next();
+};

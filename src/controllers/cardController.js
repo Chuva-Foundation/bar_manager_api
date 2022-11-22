@@ -1,22 +1,6 @@
-const Joi = require('joi');
 const { v4: uuidv4 } = require('uuid');
 
 const Card = require('../models/Card');
-
-const getSchema = Joi.object({
-  id: Joi.string()
-    .trim()
-    .guid({ version: ['uuidv4'] })
-    .required(),
-});
-
-const updateSchema = Joi.object({
-  id: Joi.string()
-    .trim()
-    .guid({ version: ['uuidv4'] })
-    .required(),
-  active: Joi.boolean(),
-});
 
 exports.getCards = async (req, res) => {
   const cards = await Card.selectAll();
@@ -27,9 +11,7 @@ exports.getCards = async (req, res) => {
 };
 
 exports.getCard = async (req, res) => {
-  const { id } = req.params;
-  const { error } = getSchema.validate({ id });
-  if (error) return res.status(400).json({ message: 'Provide a valid Id' });
+  const { id } = req.body;
 
   const card = await Card.selectById(id);
 
@@ -51,23 +33,9 @@ exports.createCard = async (req, res) => {
 };
 
 exports.updateCard = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: 'Provide a Information' });
-  }
-  const {
-    active,
-  } = req.body;
+  // if active = false check if id is associate with unpaid bill.
 
-  const { id } = req.params;
-
-  const { value, error } = updateSchema.validate({
-    id, active,
-  });
-  if (error) return res.status(400).json({ message: error.message });
-
-  // if active = false check if id is associate with unpaied bill.
-
-  const cardUpdated = await Card.update(value);
+  const cardUpdated = await Card.update(req.body);
 
   if (!cardUpdated) return res.status(400).json({ erro: 'Card not found, Provide a valid Id' });
 
