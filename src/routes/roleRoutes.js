@@ -4,17 +4,20 @@ const {
 } = require('../controllers/roleController');
 
 const { roleCreateValidator, roleUpdateValidator } = require('../middlewares/validator');
+const { adminRestricted } = require('../middlewares/restrictions');
 
 const router = Router();
 
 router.get('/:id', getRole);
+
+router.get('/', getRoles);
+
+router.use(adminRestricted);
 
 router.delete('/:id', deleteRole);
 
 router.put('/:id', roleUpdateValidator, updateRole);
 
 router.post('/', roleCreateValidator, createRole);
-
-router.get('/', getRoles);
 
 module.exports = router;

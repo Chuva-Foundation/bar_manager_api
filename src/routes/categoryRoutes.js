@@ -3,17 +3,20 @@ const { categoryCreateValidator, categoryUpdateValidator } = require('../middlew
 const {
   getCategories, getCategory, createCategory, deleteCategory, updateCategory,
 } = require('../controllers/categoryController');
+const { adminRestricted } = require('../middlewares/restrictions');
 
 const router = Router();
 
 router.get('/:id', getCategory);
+
+router.get('/', getCategories);
+
+router.use(adminRestricted);
 
 router.delete('/:id', deleteCategory);
 
 router.put('/:id', categoryUpdateValidator, updateCategory);
 
 router.post('/', categoryCreateValidator, createCategory);
-
-router.get('/', getCategories);
 
 module.exports = router;
