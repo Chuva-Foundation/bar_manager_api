@@ -17,7 +17,7 @@ class User {
 
   static async insertUser(userToInsert) {
     const {
-      name, username, password, role,
+      name, username, password, role_id,
     } = userToInsert;
 
     try {
@@ -28,7 +28,7 @@ class User {
 
       const { rows: users } = await db.query(
         'INSERT INTO users (name, username, password, role_id, create_at, update_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING username;',
-        [name, username, password_hash, role],
+        [name, username, password_hash, role_id],
       );
 
       return users[0];
@@ -40,7 +40,7 @@ class User {
 
   static async updateUser(userDataToUpdate) {
     const {
-      id, name, password, role,
+      id, name, password, role_id,
     } = userDataToUpdate;
 
     try {
@@ -57,10 +57,10 @@ class User {
           [password_hash, id],
         );
       }
-      if (role) {
+      if (role_id) {
         await db.query(
           'UPDATE users SET role_id = $1, update_at = NOW() WHERE id = $2;',
-          [role, id],
+          [role_id, id],
         );
       }
       const user = await this.selectById(id);

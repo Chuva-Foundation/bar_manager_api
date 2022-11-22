@@ -53,8 +53,6 @@ exports.getSalesByCard = async (req, res) => {
 
   const bill = await Bill.selectByCardId(value.card_id);
 
-  console.log(bill);
-
   if (!bill) return res.status(400).json({ error: 'Bill not found, Provide a valid Id' });
 
   if (bill.error) return res.status(500).json({ error: 'Internal Server Error' });

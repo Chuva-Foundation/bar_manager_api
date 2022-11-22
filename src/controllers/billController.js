@@ -1,16 +1,7 @@
-const Joi = require('joi');
-
 const Bill = require('../models/Bill');
 const Card = require('../models/Card');
 
 const re = /^\d+$/;
-
-const cardIdSchema = Joi.object({
-  card_id: Joi.string()
-    .trim()
-    .guid({ version: ['uuidv4'] })
-    .required(),
-});
 
 exports.getBills = async (req, res) => {
   const bills = await Bill.selectAll();
@@ -34,14 +25,8 @@ exports.getBill = async (req, res) => {
 };
 
 exports.getBillByCardId = async (req, res) => {
-  const { card_id } = req.params;
-  const { value, error } = cardIdSchema.validate({
-    card_id,
-  });
-
-  if (error) return res.status(400).json({ message: error.message });
-
-  const bill = await Bill.selectByCardId(value.card_id);
+  const { card_id } = req.body;
+  const bill = await Bill.selectByCardId(card_id);
 
   if (!bill) return res.status(400).json({ error: 'Bill not found, Provide a valid Id' });
 
@@ -51,19 +36,11 @@ exports.getBillByCardId = async (req, res) => {
 };
 
 exports.createBill = async (req, res) => {
-  if (!req.body) return res.status(400).json({ message: 'Provide a Information' });
-
   const {
     card_id,
   } = req.body;
 
-  const { value, error } = cardIdSchema.validate({
-    card_id,
-  });
-
-  if (error) return res.status(400).json({ message: error.message });
-
-  const card = await Card.selectById(value.card_id);
+  const card = await Card.selectById(card_id);
 
   if (!card) return res.status(400).json({ error: 'Card not found, Provide a valid Id' });
 
@@ -84,7 +61,7 @@ exports.createBill = async (req, res) => {
   //   });
   // }
 
-  const bill = await Bill.insert(value);
+  const bill = await Bill.insert(req.body);
 
   if (bill.error) return res.status(500).json({ error: bill.message });
 
@@ -92,19 +69,7 @@ exports.createBill = async (req, res) => {
 };
 
 exports.closeBill = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: 'Provide a Information' });
-  }
-  const {
-    card_id,
-  } = req.body;
-
-  const { value, error } = cardIdSchema.validate({
-    card_id,
-  });
-  if (error) return res.status(400).json({ message: error.message });
-
-  const billUpdated = await Bill.update(value);
+  const billUpdated = await Bill.update(req.body);
 
   if (!billUpdated) return res.status(400).json({ error: 'Bill not found, Provide a valid Id' });
 

@@ -6,7 +6,7 @@ CREATE TABLE roles (
   description VARCHAR (255)
 );
 
-INSERT INTO roles (role_name) VALUES (admin), (doorman), (waiter), (cashier);
+INSERT INTO roles (role_name) VALUES ('admin'), ('doorman'), ('waiter'), ('cashier');
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -24,7 +24,7 @@ CREATE TABLE categories (
   name VARCHAR (255) UNIQUE NOT NULL,
   description VARCHAR (255),
   create_at TIMESTAMP NOT NULL,
-  update_at TIMESTAMP NOT NULL,
+  update_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE products (
@@ -35,7 +35,7 @@ CREATE TABLE products (
   price FLOAT(2) NOT NULL,
   create_at TIMESTAMP NOT NULL,
   update_at TIMESTAMP NOT NULL,
-  FOREIGN KEY (category_id) REFERENCES category (id)
+  FOREIGN KEY (category_id) REFERENCES categories (id)
 );
 
 CREATE TABLE cards (
@@ -52,7 +52,7 @@ CREATE TABLE bills (
   create_at TIMESTAMP NOT NULL,
   update_at TIMESTAMP NOT NULL,
   FOREIGN KEY (card_id) REFERENCES cards (id)
-)
+);
 
 CREATE TABLE sales (
   id SERIAL PRIMARY KEY,
@@ -66,4 +66,4 @@ CREATE TABLE sales (
   FOREIGN KEY (product_id) REFERENCES products (id),
   FOREIGN KEY (seller) REFERENCES users (id),
   FOREIGN KEY (bill_id) REFERENCES bills (id)
-)
+);
