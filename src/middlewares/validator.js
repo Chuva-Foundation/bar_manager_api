@@ -285,3 +285,65 @@ exports.productUpdateValidator = async (req, res, next) => {
   req.body = { ...req.body, ...value };
   next();
 };
+
+exports.roleCreateValidator = async (req, res, next) => {
+  const createSchema = Joi.object({
+    role_name: Joi.string()
+      .trim()
+      .lowercase()
+      .alphanum()
+      .min(4)
+      .max(25)
+      .required(),
+    description: Joi.string()
+      .trim()
+      .max(255),
+  });
+  if (!req.body) return res.status(400).json({ message: 'Provide a Information' });
+
+  // const {
+  //   role_name, description,
+  // } = req.body;
+
+  const { value, error } = createSchema.validate({
+    ...req.body,
+  });
+
+  if (error) return res.status(400).json({ message: error.message });
+
+  req.body = { ...req.body, ...value };
+  next();
+};
+
+exports.roleUpdateValidator = async (req, res, next) => {
+  const updateSchema = Joi.object({
+    id: Joi.string()
+      .trim()
+      .pattern(/^\d+$/)
+      .required(),
+    role_name: Joi.string()
+      .trim()
+      .lowercase()
+      .alphanum()
+      .min(4)
+      .max(25),
+    description: Joi.string()
+      .trim()
+      .max(255),
+  });
+  if (!req.body) {
+    return res.status(400).json({ message: 'Provide a Information' });
+  }
+  // const {
+  //   role_name, description,
+  // } = req.body;
+
+  // const { id } = req.params;
+
+  const { value, error } = updateSchema.validate({
+    ...req.body, ...req.params,
+  });
+  if (error) return res.status(400).json({ message: error.message });
+  req.body = { ...req.body, ...value };
+  next();
+};

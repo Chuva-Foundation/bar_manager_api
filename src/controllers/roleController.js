@@ -1,35 +1,6 @@
-const Joi = require('joi');
-
 const Role = require('../models/Role');
 
 const re = /^\d+$/;
-
-const createSchema = Joi.object({
-  role_name: Joi.string()
-    .trim()
-    .lowercase()
-    .alphanum()
-    .min(4)
-    .max(25)
-    .required(),
-  description: Joi.string()
-    .trim()
-    .max(255),
-});
-const schemaUpdate = Joi.object({
-  id: Joi.string()
-    .pattern(/^\d+$/)
-    .required(),
-  role_name: Joi.string()
-    .trim()
-    .lowercase()
-    .alphanum()
-    .min(4)
-    .max(25),
-  description: Joi.string()
-    .trim()
-    .max(255),
-});
 
 exports.getRoles = async (req, res) => {
   const roles = await Role.selectAll();
@@ -53,19 +24,7 @@ exports.getRole = async (req, res) => {
 };
 
 exports.createRole = async (req, res) => {
-  if (!req.body) return res.status(400).json({ message: 'Provide a Information' });
-
-  const {
-    role_name, description,
-  } = req.body;
-
-  const { value, error } = createSchema.validate({
-    role_name, description,
-  });
-
-  if (error) return res.status(400).json({ message: error.message });
-
-  const role = await Role.insertRole(value);
+  const role = await Role.insertRole(req.body);
 
   if (role.error) return res.status(500).json({ erro: role.message });
 
@@ -86,21 +45,7 @@ exports.deleteRole = async (req, res) => {
 };
 
 exports.updateRole = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: 'Provide a Information' });
-  }
-  const {
-    role_name, description,
-  } = req.body;
-
-  const { id } = req.params;
-
-  const { value, error } = schemaUpdate.validate({
-    id, description, role_name,
-  });
-  if (error) return res.status(400).json({ message: error.message });
-
-  const roleUpdated = await Role.updateRole(value);
+  const roleUpdated = await Role.updateRole(req.body);
 
   if (!roleUpdated) return res.status(400).json({ erro: 'Role not found, Provide a valid Id' });
 
