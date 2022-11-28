@@ -1,11 +1,14 @@
+/* eslint-disable no-multi-str */
 const db = require('../configs/database');
 
 class Product {
   static async selectAll() {
     try {
       const { rows: products } = await db.query(
-        'SELECT * FROM products;',
+        'SELECT products.id, products.name, categories.name as category, price, products.update_at \
+        FROM products JOIN categories ON category_id = categories.id',
       );
+      console.log(products);
       return products;
     } catch (error) {
       console.log(error.message);
@@ -72,7 +75,7 @@ class Product {
   static async selectById(id) {
     try {
       const { rows: products } = await db.query(
-        'SELECT * FROM products WHERE id = $1;',
+        'SELECT * FROM products JOIN categories ON category_id = categories.id WHERE products.id = $1;',
         [id],
       );
       return products[0];

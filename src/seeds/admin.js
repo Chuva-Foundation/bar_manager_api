@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const db = require('../config/database');
+const db = require('../configs/database');
 require('dotenv').config();
 
 const password = process.env.ADMIN_PW;

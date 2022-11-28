@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "test:watch": "npm run test -- --watch --detectOpenHandles",
+    "test": "NODE_ENV=test jest",
+    "test:watch": "npm run test -- --watch --detectOpenHandles ",
     "start": "nodemon ./src/index.js"
   },
   "keywords": [],

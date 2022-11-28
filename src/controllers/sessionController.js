@@ -8,11 +8,11 @@ exports.createSession = async (req, res) => {
 
   const user = await User.selectByUsername(username);
 
-  if (!user) return res.status(401).json({ message: 'wrong username or password' });
+  if (!user) return res.status(401).json({ error: 'wrong username or password' });
   if (user.error) return res.status(500).json({ error: 'Internal Server Error' });
 
   const isPasswordCorrect = await User.correctPassword(user.id, password);
-  if (!isPasswordCorrect) return res.status(401).json({ message: 'wrong username or password' });
+  if (!isPasswordCorrect) return res.status(401).json({ error: 'wrong username or password' });
 
   return res.status(201).json({
     user,

@@ -17,11 +17,12 @@ const saleRoutes = require('./routes/saleRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
 app.use(express.json());
 app.use(checkJson);
+app.use(cors());
 
 // public route
+app.get('/', (req, res) => res.status(200).json({ message: 'Welcome to Bar Sell\'s API' }));
 app.use('/sessions', sessionRoutes);
 
 // private routes
@@ -33,8 +34,6 @@ app.use('/products', productRoutes);
 app.use('/cards', cardRoutes);
 app.use('/bills', billRoutes);
 app.use('/sales', saleRoutes);
-
-app.get('/', (req, res) => res.status(200).json({ message: 'Welcome to Bar Sell\'s API' }));
 
 app.listen(PORT, () => {
   console.log(`listem in PORT ${PORT}`);

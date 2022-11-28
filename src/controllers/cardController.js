@@ -37,9 +37,9 @@ exports.updateCard = async (req, res) => {
 
   const cardUpdated = await Card.update(req.body);
 
-  if (!cardUpdated) return res.status(400).json({ erro: 'Card not found, Provide a valid Id' });
+  if (!cardUpdated) return res.status(400).json({ error: 'Card not found, Provide a valid Id' });
 
-  if (cardUpdated.error) return res.status(500).json({ erro: cardUpdated.message });
+  if (cardUpdated.error) return res.status(500).json({ error: cardUpdated.message });
 
   return res.status(200).json({ message: `Card ${cardUpdated.id} updated` });
 };

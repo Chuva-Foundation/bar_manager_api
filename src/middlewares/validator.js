@@ -349,11 +349,14 @@ exports.roleUpdateValidator = async (req, res, next) => {
 };
 
 exports.saleCreateValidator = async (req, res, next) => {
-  const createSchema = Joi.object({
+  console.log(req.body);
+  const cardIdSchema = Joi.object({
     card_id: Joi.string()
       .trim()
       .guid({ version: ['uuidv4'] })
       .required(),
+  });
+  const createSchema = Joi.object({
     product_id: Joi.string()
       .pattern(/^\d+$/)
       .required(),
@@ -364,14 +367,33 @@ exports.saleCreateValidator = async (req, res, next) => {
   // const {
   //   product_id, amount, card_id,
   // } = req.body;
-
-  const { value, error } = createSchema.validate({
-    ...req.body,
+  const { card_id, sales } = req.body;
+  const { value, error } = cardIdSchema.validate({
+    card_id,
   });
-
   if (error) return res.status(400).json({ message: error.message });
   req.body = { ...req.body, ...value };
-  next();
+
+  const sales_array = Object.entries(sales);
+  const validate_error = sales_array.map((sale) => {
+    const [product_id, amount] = sale;
+    const { error: err } = createSchema.validate({ product_id, amount });
+    return err;
+  });
+
+  console.log(validate_error);
+
+  if (validate_error) return res.status(400).json({ message: validate_error[0].message });
+
+  // for (const [product_id, amount] of Object.entries(sales)) {
+  //   // const err = createSchema.validate({
+  //   //   ...sale,
+  //   // });
+  //   console.log(err);
+  //   // if (error) return res.status(400).json({ message: error.message });
+  // };
+  console.log('next');
+  // next();
 };
 
 exports.saleUpdateValidator = async (req, res, next) => {

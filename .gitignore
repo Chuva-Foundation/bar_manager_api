@@ -3,6 +3,7 @@ node_modules
 
 #ambient
 .env
+.env.test
 
 #test
 coverage

@@ -34,7 +34,9 @@ exports.cashierAndWaiterRestricted = async (req, res, next) => {
 
   const user = await User.selectById(userId);
 
-  if (user.role_id !== adminRoleId && user.role_id !== cashierRoleId && user.role_id !== waiterRoleId) {
+  if (user.role_id !== adminRoleId
+    && user.role_id !== cashierRoleId
+    && user.role_id !== waiterRoleId) {
     return res.status(401).json({ message: 'Access restricted' });
   }
   next();

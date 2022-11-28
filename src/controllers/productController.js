@@ -41,7 +41,7 @@ exports.deleteProduct = async (req, res) => {
 
   if (productDeleted.error) return res.status(500).json({ error: 'Internal server Error' });
 
-  return res.status(200).json({ message: `Category ${productDeleted.name} deleted` });
+  return res.status(200).json({ message: `Product ${productDeleted.name} deleted` });
 };
 
 exports.updateProduct = async (req, res) => {

@@ -6,9 +6,9 @@ const httpMocks = require('node-mocks-http');
 const {
   createUser, deleteUser, updateUser, getUser, getUsers,
 } = require('../controllers/userController');
-const db = require('../config/database');
+const db = require('../configs/database');
 
-jest.mock('../config/database');
+jest.mock('../configs/database');
 
 let req;
 let res;
