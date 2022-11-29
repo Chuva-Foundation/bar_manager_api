@@ -43,7 +43,7 @@ exports.createSale = async (req, res) => {
 
   if (!bill) Bill.insert({ card_id });
 
-  if (bill.error) return res.status(500).json({ error: 'Internal Server Error' });
+  if (bill && bill.error) return res.status(500).json({ error: 'Internal Server Error' });
 
   const product = await Product.selectById(product_id);
 
