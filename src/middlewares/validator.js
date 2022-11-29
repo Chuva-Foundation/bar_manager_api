@@ -385,8 +385,7 @@ exports.multipleSalesCreateValidator = async (req, res, next) => {
     product_id: Joi.string()
       .pattern(/^\d+$/)
       .required(),
-    amount: Joi.string()
-      .pattern(/^\d+$/)
+    amount: Joi.number()
       .required(),
   });
   // const {
