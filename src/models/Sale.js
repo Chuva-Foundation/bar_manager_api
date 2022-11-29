@@ -5,7 +5,7 @@ class Sales {
   static async selectAll() {
     try {
       const { rows: sales } = await db.query(
-        'SELECT sales.id, products.name, amount,products.price, users.username, sales.create_at FROM sales \
+        'SELECT sales.id, products.name, amount,products.price, bill_id, users.username, sales.create_at FROM sales \
         JOIN products ON product_id = products.id \
         JOIN users ON seller = users.id;',
       );
@@ -56,6 +56,29 @@ class Sales {
       );
 
       return sales[0];
+    } catch (error) {
+      console.log(error.message);
+      return { error: true, message: error.message };
+    }
+  }
+
+  static async insertMultiple(sales, products, seller, bill) {
+    // console.log(sales, products);
+    // eslint-disable-next-line no-restricted-syntax
+    const query_value_array = sales.map((sale) => {
+      const [product_id, amount] = sale;
+      const product_found = products.find((product) => product.id == product_id);
+      return `(${product_id}, ${amount}, ${product_found.price}, ${seller}, ${bill}, NOW(), NOW())`;
+    });
+    const query_values = query_value_array.join(', ');
+
+    console.log(query_values);
+    try {
+      const { rows: queried_sales } = await db.query(
+        `INSERT INTO sales (product_id, amount, price, seller, bill_id, create_at, update_at) VALUES ${query_values} RETURNING *;`,
+      );
+
+      return queried_sales;
     } catch (error) {
       console.log(error.message);
       return { error: true, message: error.message };

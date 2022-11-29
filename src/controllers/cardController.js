@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const QRCode = require('qrcode');
 
 const Card = require('../models/Card');
 
@@ -28,6 +29,17 @@ exports.createCard = async (req, res) => {
   const card = await Card.insert(id);
 
   if (card.error) return res.status(500).json({ error: card.message });
+
+  QRCode.toFile(`public/qr/${id}.png`, id, {
+    errorCorrectionLevel: 'H',
+    color: {
+      dark: '#000', // Blue dots
+      light: '#fff', // Transparent background
+    },
+  }, (err) => {
+    if (err) throw err;
+    console.log('done');
+  });
 
   return res.status(201).json({ message: `Card ${card.id} created` });
 };

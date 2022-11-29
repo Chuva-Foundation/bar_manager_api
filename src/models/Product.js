@@ -16,6 +16,22 @@ class Product {
     }
   }
 
+  static async selectByMultipleIds(sales_ids) {
+    // const ids_string = `$${sales_ids.join(' $')}`;
+    const ids_string = (sales_ids.reduce((accumulator, current_value, index) => `${accumulator}, $${index + 1}`, '')).slice(1);
+    try {
+      const { rows: products } = await db.query(
+        `SELECT products.id, products.name, products.description, products.price, categories.name as category, products.update_at \
+        FROM products JOIN categories ON category_id = categories.id WHERE products.id IN (${ids_string});`,
+        sales_ids,
+      );
+      return products;
+    } catch (error) {
+      console.log(error.message);
+      return { error: true };
+    }
+  }
+
   static async insert(productToInsert) {
     const {
       name, description, category_id, price,

@@ -20,6 +20,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(checkJson);
 app.use(cors());
+app.use(express.static('public'));
 
 // public route
 app.get('/', (req, res) => res.status(200).json({ message: 'Welcome to Bar Sell\'s API' }));
