@@ -71,9 +71,10 @@ exports.createSales = async (req, res) => {
   if (!bill) {
     Bill.insert({ card_id });
     bill = await Bill.selectByCardId(card_id);
+    console.log(bill);
   }
 
-  if (bill && bill.error) return res.status(500).json({ error: 'Internal Server Error' });
+  if (bill.error) return res.status(500).json({ error: 'Internal Server Error' });
 
   const product_ids = sales.map((sale) => sale[0]);
 
