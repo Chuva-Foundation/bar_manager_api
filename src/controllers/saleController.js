@@ -41,7 +41,7 @@ exports.createSale = async (req, res) => {
 
   const bill = await Bill.selectByCardId(card_id);
 
-  if (!bill) return res.status(400).json({ error: 'Bill not found, Provide a valid Id' });
+  if (!bill) Bill.insert({ card_id });
 
   if (bill.error) return res.status(500).json({ error: 'Internal Server Error' });
 
@@ -68,7 +68,7 @@ exports.createSales = async (req, res) => {
 
   const bill = await Bill.selectByCardId(card_id);
 
-  if (!bill) return res.status(400).json({ error: 'Bill not found, Provide a valid Id' });
+  if (!bill) Bill.insert({ card_id });
 
   if (bill.error) return res.status(500).json({ error: 'Internal Server Error' });
 
